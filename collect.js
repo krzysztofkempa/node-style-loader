@@ -12,22 +12,15 @@ exports.collectInitial = function collectInitial() {
   // commented-out so it doesn't have to be stored by the user and to test hot-reload
   //initialStyleStack = undefined;
   return styleTag;
-}
+};
 
-exports.collectContext = function collectContext(fn) {
-
-  var contextStyleStack = new styleStack();
-
-  // include path differences may make this fail, TODO: test
-  exports.add = add.bind(null, contextStyleStack);
-  var result = fn();
+exports.getStyles = function collectInitial() {
+  var styles = initialStyleStack.getStyles();
   exports.add = inactiveAdd;
-
-  return [
-    contextStyleStack.getStyleTag(),
-    result
-  ]
-}
+  // commented-out so it doesn't have to be stored by the user and to test hot-reload
+  //initialStyleStack = undefined;
+  return styles;
+};
 
 function add(stack, list, options) {
   var styles = styleStack.listToStyles(list);

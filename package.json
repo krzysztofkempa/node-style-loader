@@ -1,21 +1,20 @@
 {
-  "name": "node-style-loader",
-  "version": "0.0.1-alpha",
-  "description": "style-loader for the server side",
-  "author": "Tarik Ansari <tarikansari@iheartmedia.com>",
+  "name": "node-style-webpack-loader",
+  "version": "0.0.3-alpha",
+  "description": "style-loader for the server side rendering",
+  "author": "Krzysztof Kempa <kkempa@olx.pl>",
   "contributors": [
-    "Zach Stayman <zachstayman@iheartmedia.com>",
-    "Andrew Vickory <andrewvickory@iheartmedia.com>"
+    "Krzysztof Kempa <kkempa@olx.pl>"
   ],
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/iheartradio/node-style-loader.git"
+    "url": "https://github.com/krzysztofkempa/node-style-loader.git"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
-  "homepage": "https://github.com/iheartradio/node-style-loader#readme",
+  "homepage": "https://github.com/krzysztofkempa/node-style-loader#readme",
   "main": "./loader.js",
   "dependencies": {
     "loader-utils": "^0.2.12"
