@@ -11,7 +11,7 @@ exports.getMatchingStyles = function (HTML) {
 
 exports.getAllStyles = function () {
   exports.add = inactiveAdd;
-  return allSelectorsWithStyles.reduce((acc, style) => acc + style, '');
+  return wrapStylesIntoTag(allSelectorsWithStyles.reduce((acc, style) => acc + style, ''));
 };
 
 function wrapStylesIntoTag(styles) {

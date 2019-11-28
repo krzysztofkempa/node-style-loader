@@ -1,6 +1,6 @@
 {
   "name": "node-style-webpack-loader",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "style-loader for the server side rendering",
   "author": "Krzysztof Kempa <kkempa@olx.pl>",
   "contributors": [
