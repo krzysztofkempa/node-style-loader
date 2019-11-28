@@ -6,8 +6,17 @@ exports.add = add;
 
 exports.getMatchingStyles = function (HTML) {
   exports.add = inactiveAdd;
-  return matchStyles(HTML);
+  return wrapStylesIntoTag(matchStyles(HTML));
 };
+
+exports.getAllStyles = function () {
+  exports.add = inactiveAdd;
+  return allSelectorsWithStyles.reduce((acc, style) => acc + style, '');
+};
+
+function wrapStylesIntoTag(styles) {
+  return `<style class="server-style-loader-element">${styles}</style>`;
+}
 
 function inactiveAdd() {}
 
