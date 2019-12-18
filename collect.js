@@ -1,16 +1,15 @@
 let allSelectorsWithStyles = [];
 let commonStyles = '';
 let classToSelectorMapping = null;
+let parsedModules = [];
 
 exports.add = add;
 
 exports.getMatchingStyles = function (HTML) {
-  exports.add = inactiveAdd;
   return wrapStylesIntoTag(matchStyles(HTML));
 };
 
 exports.getAllStyles = function () {
-  exports.add = inactiveAdd;
   return wrapStylesIntoTag(allSelectorsWithStyles.reduce((acc, style) => acc + style, ''));
 };
 
@@ -21,19 +20,34 @@ function wrapStylesIntoTag(styles) {
 function inactiveAdd() {}
 
 function add(list) {
-  addStylesToStack(list);
-}
+  let hasNewModules = false;
 
-function addStylesToStack(list) {
-  const styles = listToStyles(list);
-  allSelectorsWithStyles = [...allSelectorsWithStyles, ...styles];
+  list.forEach(([ moduleId, stylesString ]) => {
+    if (!parsedModules.includes(moduleId)) {
+      parsedModules.push(moduleId);
+      const styles = extract(stylesString);
+
+      allSelectorsWithStyles = [...allSelectorsWithStyles, ...styles];
+      hasNewModules = true;
+    }
+  });
+
+  if (hasNewModules) {
+    generateMapping();
+  }
 }
 
 function generateMapping() {
   classToSelectorMapping = allSelectorsWithStyles.reduce((mapping, item, index) => {
-    const classes = item.match(/\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*/g);
+    const [selector, style] = item.split('{');
+    const [...selectors] = selector.split(',');
+    const hasNonClassSelectors = selectors.some(selector => !selector.match(/\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*/g));
 
-    if (classes) {
+    if (hasNonClassSelectors) {
+      commonStyles += item;
+    } else {
+      const classes = item.match(/\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*/g);
+
       classes.map(c => c.slice(1)).forEach(function (cssClass) {
         const currentMap = mapping[cssClass];
         if (currentMap) {
@@ -42,8 +56,6 @@ function generateMapping() {
           mapping[cssClass] = [index];
         }
       });
-    } else {
-      commonStyles += item;
     }
 
     return mapping
@@ -51,10 +63,6 @@ function generateMapping() {
 }
 
 function matchStyles(HTML) {
-  if (!classToSelectorMapping) {
-    generateMapping();
-  }
-
   const regex = /class=\"(.*?)\"/g;
   const existingClasses = HTML.match(regex).reduce((acc, el) => {
     const classesString = el.split('"')[1];
@@ -75,22 +83,6 @@ function matchStyles(HTML) {
   const styles = commonStyles + indexes.reduce((css, index) => css + allSelectorsWithStyles[index], '');
 
   return `<style class="server-style-loader-element">${styles}</style>`;
-}
-
-function listToStyles(list) {
-  let styles = [];
-
-  for (var i = 0; i < list.length; i++) {
-    var item = list[i];
-    var id = item[0];
-    var css = item[1];
-    if (css) {
-      const selectorsWithStyles = extract(css);
-      styles = [...styles, ...selectorsWithStyles];
-    }
-  }
-
-  return styles;
 }
 
 function extract(css) {
